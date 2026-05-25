@@ -1,0 +1,223 @@
+/* availability-calendar.css */
+
+.calendar-wrapper .rbc-calendar {
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgb(247, 247, 247);
+}
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+/* TOOLBAR */
+
+.calendar-wrapper .rbc-toolbar {
+  margin-bottom: 18px;
+}
+
+.calendar-wrapper .rbc-toolbar button {
+  background: white;
+  border: 1px solid #e4e4e7;
+  color: #18181b;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.calendar-wrapper .rbc-toolbar button:hover {
+  background: #f4f4f5;
+}
+
+.calendar-wrapper .rbc-toolbar button.rbc-active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+/* HEADERS */
+
+.calendar-wrapper .rbc-header {
+  background: #fafafa;
+  border-color: #e5e7eb;
+  color: #111827;
+  font-weight: 600;
+  padding: 12px 0;
+}
+
+/* GRID */
+
+.calendar-wrapper .rbc-month-view,
+.calendar-wrapper .rbc-time-view,
+.calendar-wrapper .rbc-time-content {
+  border-color: #e5e7eb;
+}
+
+.calendar-wrapper .rbc-day-bg,
+.calendar-wrapper .rbc-time-slot {
+  background: white;
+  border-color: #f1f5f9;
+}
+
+/* TIME COLUMN */
+
+.calendar-wrapper .rbc-time-gutter,
+.calendar-wrapper .rbc-timeslot-group {
+  background: #fafafa;
+  border-color: #e5e7eb;
+  color: #71717a;
+}
+
+/* TODAY */
+
+.calendar-wrapper .rbc-today {
+  background: rgba(37, 99, 235, 0.06);
+}
+
+/* OFF RANGE */
+
+.calendar-wrapper .rbc-off-range-bg {
+  background: #fafafa;
+}
+
+.calendar-wrapper .rbc-off-range {
+  color: #a1a1aa;
+}
+
+/* DATE TEXT */
+
+.calendar-wrapper .rbc-date-cell {
+  color: #111827;
+}
+
+/* EVENTS */
+
+.calendar-wrapper .rbc-event {
+  border-radius: 10px;
+  border: none;
+  padding: 2px 6px;
+  box-shadow: none;
+}
+
+/* POPUP */
+
+.calendar-wrapper .rbc-overlay {
+  background: white;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* CURRENT TIME */
+
+.calendar-wrapper .rbc-current-time-indicator {
+  background: #2563eb;
+}
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+.dark .calendar-wrapper .rbc-calendar {
+  background: #09090b;
+  color: #fafafa;
+}
+
+/* TOOLBAR */
+
+.dark .calendar-wrapper .rbc-toolbar {
+  background: rgba(24, 24, 27, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid #27272a;
+  padding: 12px;
+  border-radius: 16px;
+}
+
+.dark .calendar-wrapper .rbc-toolbar button {
+  background: #18181b;
+  color: #fafafa;
+  border: 1px solid #27272a;
+}
+
+.dark .calendar-wrapper .rbc-toolbar button:hover {
+  background: #27272a;
+}
+
+.dark .calendar-wrapper .rbc-toolbar button.rbc-active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+/* HEADERS */
+
+.dark .calendar-wrapper .rbc-header {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #27272a;
+}
+
+/* GRID */
+
+.dark .calendar-wrapper .rbc-month-view,
+.dark .calendar-wrapper .rbc-time-view,
+.dark .calendar-wrapper .rbc-time-content {
+  border-color: #27272a;
+}
+
+.dark .calendar-wrapper .rbc-day-bg,
+.dark .calendar-wrapper .rbc-time-slot {
+  background: #09090b;
+  border-color: #27272a;
+}
+
+/* TIME COLUMN */
+
+.dark .calendar-wrapper .rbc-time-gutter,
+.dark .calendar-wrapper .rbc-timeslot-group {
+  background: #111111;
+  border-color: #27272a;
+  color: #a1a1aa;
+}
+
+/* TODAY */
+
+.dark .calendar-wrapper .rbc-today {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+/* OFF RANGE */
+
+.dark .calendar-wrapper .rbc-off-range-bg {
+  background: #111111;
+}
+
+.dark .calendar-wrapper .rbc-off-range {
+  color: #52525b;
+}
+
+/* DATE TEXT */
+
+.dark .calendar-wrapper .rbc-date-cell {
+  color: #f4f4f5;
+}
+
+/* EVENTS */
+
+.dark .calendar-wrapper .rbc-event {
+  border-radius: 10px;
+}
+
+/* POPUP */
+
+.dark .calendar-wrapper .rbc-overlay {
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  color: white;
+}
+
+/* CURRENT TIME */
+
+.dark .calendar-wrapper .rbc-current-time-indicator {
+  background-color: #3b82f6;
+}

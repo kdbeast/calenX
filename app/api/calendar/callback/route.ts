@@ -88,8 +88,7 @@ export async function GET(request: NextRequest) {
 
     // Check if this Google account is already connected
     const existingAccount = user.connectedAccounts?.find(
-      (acc: { accountId: string; refreshToken?: string }) =>
-        acc.accountId === googleUser.id,
+      (acc) => acc.accountId === googleUser.id,
     );
 
     if (existingAccount) {

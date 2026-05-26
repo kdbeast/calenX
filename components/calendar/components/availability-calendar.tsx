@@ -136,20 +136,10 @@ export function AvailabilityCalendar({
   const now = new Date();
   const todayStart = startOfDay(now);
 
-  const isDark = useMemo(() => {
-    if (typeof window === "undefined") return false;
-
-    return document.documentElement.classList.contains("dark");
-  }, []);
-
   const slotPropGetter = (date: Date) => {
     if (isBefore(date, now)) {
       return {
-        style: {
-          backgroundColor: isDark ? "#111111" : "#f5f5f0",
-          cursor: "not-allowed",
-          opacity: 0.85,
-        },
+        className: "calendar-past-slot",
       };
     }
 
@@ -159,9 +149,7 @@ export function AvailabilityCalendar({
   const dayPropGetter = (date: Date) => {
     if (isBefore(date, todayStart)) {
       return {
-        style: {
-          backgroundColor: isDark ? "#f24949" : "#f24940",
-        },
+        className: "calendar-past-day",
       };
     }
 
@@ -232,8 +220,6 @@ export function AvailabilityCalendar({
     if (isBusyBlock(event)) {
       return {
         style: {
-          backgroundColor: isDark ? "#1d4ed8" : "#3b82f6",
-
           color: "white",
           border: "none",
           borderRadius: "8px",
@@ -275,15 +261,8 @@ export function AvailabilityCalendar({
         },
       };
 
-      const colors = isDark
-        ? darkColors[status as keyof typeof darkColors]
-        : BOOKING_STATUS_COLORS[status as keyof typeof BOOKING_STATUS_COLORS];
-
       return {
         style: {
-          backgroundColor: colors.background,
-          border: `1px solid ${colors.border}`,
-          color: colors.text,
           borderRadius: "10px",
           fontWeight: 600,
           padding: "2px 6px",
@@ -293,8 +272,6 @@ export function AvailabilityCalendar({
 
     return {
       style: {
-        backgroundColor: isDark ? "#1d4ed8" : "#2563eb",
-
         border: "none",
         color: "white",
         borderRadius: "10px",

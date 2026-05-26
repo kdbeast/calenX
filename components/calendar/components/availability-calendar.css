@@ -221,3 +221,73 @@
 .dark .calendar-wrapper .rbc-current-time-indicator {
   background-color: #3b82f6;
 }
+
+/* ========================================
+   PAST SLOTS
+======================================== */
+
+.calendar-past-slot {
+  background-color: #f4f4f5 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.dark .calendar-past-slot {
+  background-color: #18181b !important;
+}
+
+/* ========================================
+   PAST DAYS
+======================================== */
+
+.calendar-past-day {
+  background-color: #fef2f2 !important;
+}
+
+.dark .calendar-past-day {
+  background-color: #3f1d1d !important;
+}
+
+/* ========================================
+   CALENDAR BASE FIXES
+======================================== */
+
+.rbc-time-view,
+.rbc-time-content,
+.rbc-time-header-content,
+.rbc-header,
+.rbc-day-slot,
+.rbc-timeslot-group {
+  background-color: transparent;
+}
+
+/* Light mode borders */
+.rbc-time-content,
+.rbc-time-header,
+.rbc-timeslot-group,
+.rbc-day-bg,
+.rbc-header {
+  border-color: #e4e4e7 !important;
+}
+
+/* Dark mode borders */
+.dark .rbc-time-content,
+.dark .rbc-time-header,
+.dark .rbc-timeslot-group,
+.dark .rbc-day-bg,
+.dark .rbc-header {
+  border-color: #27272a !important;
+}
+
+/* Current time indicator */
+.rbc-current-time-indicator {
+  background-color: #2563eb !important;
+}
+
+.rbc-toolbar,
+.rbc-header,
+.rbc-label,
+.rbc-time-content,
+.rbc-event {
+  font-family: inherit;
+}

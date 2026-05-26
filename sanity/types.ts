@@ -12,22 +12,33 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol;
+
 // Source: schema.json
+export type UserReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "user";
+};
+
 export type Feedback = {
   _id: string;
   _type: "feedback";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  user: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "user";
-  };
+  user: UserReference;
   content: string;
   createdAt: string;
   archived?: boolean;
+};
+
+export type MeetingTypeReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "meetingType";
 };
 
 export type Booking = {
@@ -36,18 +47,8 @@ export type Booking = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  host: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "user";
-  };
-  meetingType?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "meetingType";
-  };
+  host: UserReference;
+  meetingType?: MeetingTypeReference;
   guestName: string;
   guestEmail: string;
   startTime: string;
@@ -67,12 +68,7 @@ export type MeetingType = {
   slug: Slug;
   duration: 15 | 30 | 45 | 60 | 90;
   description?: string;
-  host: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "user";
-  };
+  host: UserReference;
   isDefault?: boolean;
 };
 
@@ -110,12 +106,16 @@ export type User = {
   name?: string;
   email?: string;
   slug?: Slug;
-  availability?: Array<{
-    _key: string;
-  } & AvailabilitySlot>;
-  connectedAccounts?: Array<{
-    _key: string;
-  } & ConnectedAccount>;
+  availability?: Array<
+    {
+      _key: string;
+    } & AvailabilitySlot
+  >;
+  connectedAccounts?: Array<
+    {
+      _key: string;
+    } & ConnectedAccount
+  >;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -151,6 +151,7 @@ export type SanityImageMetadata = {
   palette?: SanityImagePalette;
   lqip?: string;
   blurHash?: string;
+  thumbHash?: string;
   hasAlpha?: boolean;
   isOpaque?: boolean;
 };
@@ -182,14 +183,14 @@ export type SanityFileAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   source?: SanityAssetSourceData;
 };
 
@@ -211,14 +212,14 @@ export type SanityImageAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   metadata?: SanityImageMetadata;
   source?: SanityAssetSourceData;
 };
@@ -230,20 +231,41 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = Feedback | Booking | MeetingType | Slug | ConnectedAccount | AvailabilitySlot | User | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
-export declare const internalGroqTypeReferenceTo: unique symbol;
+export type AllSanitySchemaTypes =
+  | UserReference
+  | Feedback
+  | MeetingTypeReference
+  | Booking
+  | MeetingType
+  | Slug
+  | ConnectedAccount
+  | AvailabilitySlot
+  | User
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint;
+
 // Source: lib/actions/availability.ts
 // Variable: COUNT_USER_BOOKINGS_QUERY
 // Query: count(*[  _type == "booking"  && host->clerkId == $clerkId  && startTime >= $monthStart  && startTime < $monthEnd])
-export type COUNT_USER_BOOKINGS_QUERYResult = number;
+export type COUNT_USER_BOOKINGS_QUERY_RESULT = number;
+
+// Source: lib/actions/availability.ts
 // Variable: HAS_CONNECTED_ACCOUNT_QUERY
 // Query: count(*[  _type == "user"  && clerkId == $clerkId  && defined(connectedAccounts)  && length(connectedAccounts) > 0]) > 0
-export type HAS_CONNECTED_ACCOUNT_QUERYResult = boolean;
+export type HAS_CONNECTED_ACCOUNT_QUERY_RESULT = boolean;
 
 // Source: sanity/queries/bookings.ts
 // Variable: BOOKINGS_BY_HOST_QUERY
 // Query: *[  _type == "booking"  && host._ref == $hostId] | order(startTime asc) {  _id,  _type,  guestName,  guestEmail,  startTime,  endTime,  notes,  googleEventId,  meetLink}
-export type BOOKINGS_BY_HOST_QUERYResult = Array<{
+export type BOOKINGS_BY_HOST_QUERY_RESULT = Array<{
   _id: string;
   _type: "booking";
   guestName: string;
@@ -254,18 +276,22 @@ export type BOOKINGS_BY_HOST_QUERYResult = Array<{
   googleEventId: string | null;
   meetLink: string | null;
 }>;
+
+// Source: sanity/queries/bookings.ts
 // Variable: BOOKINGS_IN_RANGE_QUERY
 // Query: *[  _type == "booking"  && host._ref == $hostId  && startTime >= $startDate  && startTime <= $endDate] | order(startTime asc) {  _id,  startTime,  endTime,  googleEventId,  guestEmail}
-export type BOOKINGS_IN_RANGE_QUERYResult = Array<{
+export type BOOKINGS_IN_RANGE_QUERY_RESULT = Array<{
   _id: string;
   startTime: string;
   endTime: string;
   googleEventId: string | null;
   guestEmail: string;
 }>;
+
+// Source: sanity/queries/bookings.ts
 // Variable: BOOKING_BY_ID_QUERY
 // Query: *[  _type == "booking"  && _id == $bookingId][0]{  _id,  _type,  host->{    _id,    name,    email  },  guestName,  guestEmail,  startTime,  endTime,  notes,  googleEventId,  meetLink}
-export type BOOKING_BY_ID_QUERYResult = {
+export type BOOKING_BY_ID_QUERY_RESULT = {
   _id: string;
   _type: "booking";
   host: {
@@ -281,9 +307,11 @@ export type BOOKING_BY_ID_QUERYResult = {
   googleEventId: string | null;
   meetLink: string | null;
 } | null;
+
+// Source: sanity/queries/bookings.ts
 // Variable: BOOKING_WITH_HOST_CALENDAR_QUERY
 // Query: *[  _type == "booking"  && _id == $bookingId][0]{  _id,  googleEventId,  host->{    _id,    connectedAccounts[isDefault == true][0]{      _key,      accountId,      email,      accessToken,      refreshToken,      expiryDate,      isDefault    }  }}
-export type BOOKING_WITH_HOST_CALENDAR_QUERYResult = {
+export type BOOKING_WITH_HOST_CALENDAR_QUERY_RESULT = {
   _id: string;
   googleEventId: string | null;
   host: {
@@ -299,9 +327,11 @@ export type BOOKING_WITH_HOST_CALENDAR_QUERYResult = {
     } | null;
   };
 } | null;
+
+// Source: sanity/queries/bookings.ts
 // Variable: HOST_BOOKINGS_BY_CLERK_ID_QUERY
-// Query: *[  _type == "booking"  && host->clerkId == $clerkId] | order(startTime desc) {  _id,  _type,  guestName,  guestEmail,  startTime,  endTime,  notes,  googleEventId,  meetLink}
-export type HOST_BOOKINGS_BY_CLERK_ID_QUERYResult = Array<{
+// Query: *[  _type == "booking"  && host->clerkId == $clerkId] | order(startTime asc) {  _id,  _type,  guestName,  guestEmail,  startTime,  endTime,  notes,  googleEventId,  meetLink}
+export type HOST_BOOKINGS_BY_CLERK_ID_QUERY_RESULT = Array<{
   _id: string;
   _type: "booking";
   guestName: string;
@@ -312,9 +342,11 @@ export type HOST_BOOKINGS_BY_CLERK_ID_QUERYResult = Array<{
   googleEventId: string | null;
   meetLink: string | null;
 }>;
+
+// Source: sanity/queries/bookings.ts
 // Variable: HOST_UPCOMING_BOOKINGS_QUERY
 // Query: *[  _type == "booking"  && host->clerkId == $clerkId  && startTime >= $startDate] | order(startTime asc) {  _id,  guestName,  guestEmail,  startTime,  endTime,  googleEventId,  meetLink}
-export type HOST_UPCOMING_BOOKINGS_QUERYResult = Array<{
+export type HOST_UPCOMING_BOOKINGS_QUERY_RESULT = Array<{
   _id: string;
   guestName: string;
   guestEmail: string;
@@ -323,16 +355,20 @@ export type HOST_UPCOMING_BOOKINGS_QUERYResult = Array<{
   googleEventId: string | null;
   meetLink: string | null;
 }>;
+
+// Source: sanity/queries/bookings.ts
 // Variable: BOOKINGS_BY_HOST_SLUG_IN_RANGE_QUERY
 // Query: *[  _type == "booking"  && host->slug.current == $hostSlug  && startTime >= $startDate  && startTime <= $endDate] | order(startTime asc) {  _id,  startTime,  endTime}
-export type BOOKINGS_BY_HOST_SLUG_IN_RANGE_QUERYResult = Array<{
+export type BOOKINGS_BY_HOST_SLUG_IN_RANGE_QUERY_RESULT = Array<{
   _id: string;
   startTime: string;
   endTime: string;
 }>;
+
+// Source: sanity/queries/bookings.ts
 // Variable: ALL_BOOKINGS_BY_HOST_SLUG_QUERY
 // Query: *[  _type == "booking"  && host->slug.current == $hostSlug] | order(startTime asc) {  _id,  startTime,  endTime,  googleEventId,  guestEmail}
-export type ALL_BOOKINGS_BY_HOST_SLUG_QUERYResult = Array<{
+export type ALL_BOOKINGS_BY_HOST_SLUG_QUERY_RESULT = Array<{
   _id: string;
   startTime: string;
   endTime: string;
@@ -343,7 +379,7 @@ export type ALL_BOOKINGS_BY_HOST_SLUG_QUERYResult = Array<{
 // Source: sanity/queries/meetingTypes.ts
 // Variable: MEETING_TYPES_BY_HOST_QUERY
 // Query: *[  _type == "meetingType"  && host->clerkId == $clerkId] | order(isDefault desc, name asc) {  _id,  name,  "slug": slug.current,  duration,  description,  isDefault}
-export type MEETING_TYPES_BY_HOST_QUERYResult = Array<{
+export type MEETING_TYPES_BY_HOST_QUERY_RESULT = Array<{
   _id: string;
   name: string;
   slug: string;
@@ -351,9 +387,11 @@ export type MEETING_TYPES_BY_HOST_QUERYResult = Array<{
   description: string | null;
   isDefault: boolean | null;
 }>;
+
+// Source: sanity/queries/meetingTypes.ts
 // Variable: MEETING_TYPE_BY_SLUGS_QUERY
 // Query: *[  _type == "meetingType"  && host->slug.current == $hostSlug  && slug.current == $meetingTypeSlug][0] {  _id,  name,  "slug": slug.current,  duration,  description,  host-> {    _id,    name,    email,    "slug": slug.current,    availability[] {      _key,      startDateTime,      endDateTime    },    connectedAccounts[] {      _key,      accountId,      email,      isDefault,      accessToken,      refreshToken,      expiryDate    }  }}
-export type MEETING_TYPE_BY_SLUGS_QUERYResult = {
+export type MEETING_TYPE_BY_SLUGS_QUERY_RESULT = {
   _id: string;
   name: string;
   slug: string;
@@ -380,9 +418,11 @@ export type MEETING_TYPE_BY_SLUGS_QUERYResult = {
     }> | null;
   };
 } | null;
+
+// Source: sanity/queries/meetingTypes.ts
 // Variable: MEETING_TYPES_BY_HOST_SLUG_QUERY
 // Query: *[  _type == "meetingType"  && host->slug.current == $hostSlug] | order(isDefault desc, name asc) {  _id,  name,  "slug": slug.current,  duration,  description,  isDefault}
-export type MEETING_TYPES_BY_HOST_SLUG_QUERYResult = Array<{
+export type MEETING_TYPES_BY_HOST_SLUG_QUERY_RESULT = Array<{
   _id: string;
   name: string;
   slug: string;
@@ -390,14 +430,16 @@ export type MEETING_TYPES_BY_HOST_SLUG_QUERYResult = Array<{
   description: string | null;
   isDefault: boolean | null;
 }>;
+
+// Source: sanity/queries/meetingTypes.ts
 // Variable: HOST_ID_BY_CLERK_ID_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]._id
-export type HOST_ID_BY_CLERK_ID_QUERYResult = string | null;
+export type HOST_ID_BY_CLERK_ID_QUERY_RESULT = string | null;
 
 // Source: sanity/queries/users.ts
 // Variable: USER_BY_CLERK_ID_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  _type,  clerkId,  name,  email,  slug,  availability[]{    _key,    startDateTime,    endDateTime  },  connectedAccounts[]{    _key,    accountId,    email,    provider,    isDefault,    connectedAt  }}
-export type USER_BY_CLERK_ID_QUERYResult = {
+export type USER_BY_CLERK_ID_QUERY_RESULT = {
   _id: string;
   _type: "user";
   clerkId: string;
@@ -418,9 +460,11 @@ export type USER_BY_CLERK_ID_QUERYResult = {
     connectedAt: string | null;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_BY_SLUG_QUERY
 // Query: *[  _type == "user"  && slug.current == $slug][0]{  _id,  _type,  name,  email,  slug,  availability[]{    _key,    startDateTime,    endDateTime  }}
-export type USER_BY_SLUG_QUERYResult = {
+export type USER_BY_SLUG_QUERY_RESULT = {
   _id: string;
   _type: "user";
   name: string | null;
@@ -432,9 +476,11 @@ export type USER_BY_SLUG_QUERYResult = {
     endDateTime: string;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_WITH_TOKENS_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  connectedAccounts[]{    _key,    accountId,    email,    accessToken,    refreshToken,    expiryDate,    isDefault  }}
-export type USER_WITH_TOKENS_QUERYResult = {
+export type USER_WITH_TOKENS_QUERY_RESULT = {
   _id: string;
   connectedAccounts: Array<{
     _key: string;
@@ -446,19 +492,25 @@ export type USER_WITH_TOKENS_QUERYResult = {
     isDefault: boolean | null;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_ID_BY_ACCOUNT_KEY_QUERY
 // Query: *[  _type == "user"  && defined(connectedAccounts[_key == $accountKey])][0]{  _id}
-export type USER_ID_BY_ACCOUNT_KEY_QUERYResult = {
+export type USER_ID_BY_ACCOUNT_KEY_QUERY_RESULT = {
   _id: string;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_ID_BY_CLERK_ID_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id}
-export type USER_ID_BY_CLERK_ID_QUERYResult = {
+export type USER_ID_BY_CLERK_ID_QUERY_RESULT = {
   _id: string;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_WITH_AVAILABILITY_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  availability[]{    _key,    startDateTime,    endDateTime  }}
-export type USER_WITH_AVAILABILITY_QUERYResult = {
+export type USER_WITH_AVAILABILITY_QUERY_RESULT = {
   _id: string;
   availability: Array<{
     _key: string;
@@ -466,17 +518,22 @@ export type USER_WITH_AVAILABILITY_QUERYResult = {
     endDateTime: string;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_WITH_CONNECTED_ACCOUNTS_QUERY
-// Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  connectedAccounts[]{    accountId  }}
-export type USER_WITH_CONNECTED_ACCOUNTS_QUERYResult = {
+// Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  connectedAccounts[]{    accountId,    refreshToken  }}
+export type USER_WITH_CONNECTED_ACCOUNTS_QUERY_RESULT = {
   _id: string;
   connectedAccounts: Array<{
     accountId: string;
+    refreshToken: string | null;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: HOST_BY_SLUG_WITH_TOKENS_QUERY
 // Query: *[  _type == "user"  && slug.current == $slug][0]{  _id,  name,  email,  slug,  availability[]{    _key,    startDateTime,    endDateTime  },  connectedAccounts[]{    _key,    accountId,    email,    accessToken,    refreshToken,    expiryDate,    isDefault  }}
-export type HOST_BY_SLUG_WITH_TOKENS_QUERYResult = {
+export type HOST_BY_SLUG_WITH_TOKENS_QUERY_RESULT = {
   _id: string;
   name: string | null;
   email: string | null;
@@ -496,9 +553,11 @@ export type HOST_BY_SLUG_WITH_TOKENS_QUERYResult = {
     isDefault: boolean | null;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  connectedAccounts[]{    _key,    accountId,    email,    isDefault  }}
-export type USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult = {
+export type USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY_RESULT = {
   connectedAccounts: Array<{
     _key: string;
     accountId: string;
@@ -506,9 +565,11 @@ export type USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult = {
     isDefault: boolean | null;
   }> | null;
 } | null;
+
+// Source: sanity/queries/users.ts
 // Variable: USER_SLUG_QUERY
 // Query: *[  _type == "user"  && clerkId == $clerkId][0]{  _id,  name,  slug}
-export type USER_SLUG_QUERYResult = {
+export type USER_SLUG_QUERY_RESULT = {
   _id: string;
   name: string | null;
   slug: Slug | null;
@@ -518,29 +579,29 @@ export type USER_SLUG_QUERYResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "count(*[\n  _type == \"booking\"\n  && host->clerkId == $clerkId\n  && startTime >= $monthStart\n  && startTime < $monthEnd\n])": COUNT_USER_BOOKINGS_QUERYResult;
-    "count(*[\n  _type == \"user\"\n  && clerkId == $clerkId\n  && defined(connectedAccounts)\n  && length(connectedAccounts) > 0\n]) > 0": HAS_CONNECTED_ACCOUNT_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host._ref == $hostId\n] | order(startTime asc) {\n  _id,\n  _type,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}": BOOKINGS_BY_HOST_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host._ref == $hostId\n  && startTime >= $startDate\n  && startTime <= $endDate\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime,\n  googleEventId,\n  guestEmail\n}": BOOKINGS_IN_RANGE_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && _id == $bookingId\n][0]{\n  _id,\n  _type,\n  host->{\n    _id,\n    name,\n    email\n  },\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}": BOOKING_BY_ID_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && _id == $bookingId\n][0]{\n  _id,\n  googleEventId,\n  host->{\n    _id,\n    connectedAccounts[isDefault == true][0]{\n      _key,\n      accountId,\n      email,\n      accessToken,\n      refreshToken,\n      expiryDate,\n      isDefault\n    }\n  }\n}": BOOKING_WITH_HOST_CALENDAR_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host->clerkId == $clerkId\n] | order(startTime desc) {\n  _id,\n  _type,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}": HOST_BOOKINGS_BY_CLERK_ID_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host->clerkId == $clerkId\n  && startTime >= $startDate\n] | order(startTime asc) {\n  _id,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  googleEventId,\n  meetLink\n}": HOST_UPCOMING_BOOKINGS_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host->slug.current == $hostSlug\n  && startTime >= $startDate\n  && startTime <= $endDate\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime\n}": BOOKINGS_BY_HOST_SLUG_IN_RANGE_QUERYResult;
-    "*[\n  _type == \"booking\"\n  && host->slug.current == $hostSlug\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime,\n  googleEventId,\n  guestEmail\n}": ALL_BOOKINGS_BY_HOST_SLUG_QUERYResult;
-    "*[\n  _type == \"meetingType\"\n  && host->clerkId == $clerkId\n] | order(isDefault desc, name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  duration,\n  description,\n  isDefault\n}": MEETING_TYPES_BY_HOST_QUERYResult;
-    "*[\n  _type == \"meetingType\"\n  && host->slug.current == $hostSlug\n  && slug.current == $meetingTypeSlug\n][0] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  duration,\n  description,\n  host-> {\n    _id,\n    name,\n    email,\n    \"slug\": slug.current,\n    availability[] {\n      _key,\n      startDateTime,\n      endDateTime\n    },\n    connectedAccounts[] {\n      _key,\n      accountId,\n      email,\n      isDefault,\n      accessToken,\n      refreshToken,\n      expiryDate\n    }\n  }\n}": MEETING_TYPE_BY_SLUGS_QUERYResult;
-    "*[\n  _type == \"meetingType\"\n  && host->slug.current == $hostSlug\n] | order(isDefault desc, name asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  duration,\n  description,\n  isDefault\n}": MEETING_TYPES_BY_HOST_SLUG_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]._id": HOST_ID_BY_CLERK_ID_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  _type,\n  clerkId,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  },\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    provider,\n    isDefault,\n    connectedAt\n  }\n}": USER_BY_CLERK_ID_QUERYResult;
-    "*[\n  _type == \"user\"\n  && slug.current == $slug\n][0]{\n  _id,\n  _type,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  }\n}": USER_BY_SLUG_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    accessToken,\n    refreshToken,\n    expiryDate,\n    isDefault\n  }\n}": USER_WITH_TOKENS_QUERYResult;
-    "*[\n  _type == \"user\"\n  && defined(connectedAccounts[_key == $accountKey])\n][0]{\n  _id\n}": USER_ID_BY_ACCOUNT_KEY_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id\n}": USER_ID_BY_CLERK_ID_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  }\n}": USER_WITH_AVAILABILITY_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  connectedAccounts[]{\n    accountId\n  }\n}": USER_WITH_CONNECTED_ACCOUNTS_QUERYResult;
-    "*[\n  _type == \"user\"\n  && slug.current == $slug\n][0]{\n  _id,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  },\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    accessToken,\n    refreshToken,\n    expiryDate,\n    isDefault\n  }\n}": HOST_BY_SLUG_WITH_TOKENS_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    isDefault\n  }\n}": USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult;
-    "*[\n  _type == \"user\"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  name,\n  slug\n}": USER_SLUG_QUERYResult;
+    'count(*[\n  _type == "booking"\n  && host->clerkId == $clerkId\n  && startTime >= $monthStart\n  && startTime < $monthEnd\n])': COUNT_USER_BOOKINGS_QUERY_RESULT;
+    'count(*[\n  _type == "user"\n  && clerkId == $clerkId\n  && defined(connectedAccounts)\n  && length(connectedAccounts) > 0\n]) > 0': HAS_CONNECTED_ACCOUNT_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host._ref == $hostId\n] | order(startTime asc) {\n  _id,\n  _type,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}': BOOKINGS_BY_HOST_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host._ref == $hostId\n  && startTime >= $startDate\n  && startTime <= $endDate\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime,\n  googleEventId,\n  guestEmail\n}': BOOKINGS_IN_RANGE_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && _id == $bookingId\n][0]{\n  _id,\n  _type,\n  host->{\n    _id,\n    name,\n    email\n  },\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}': BOOKING_BY_ID_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && _id == $bookingId\n][0]{\n  _id,\n  googleEventId,\n  host->{\n    _id,\n    connectedAccounts[isDefault == true][0]{\n      _key,\n      accountId,\n      email,\n      accessToken,\n      refreshToken,\n      expiryDate,\n      isDefault\n    }\n  }\n}': BOOKING_WITH_HOST_CALENDAR_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host->clerkId == $clerkId\n] | order(startTime asc) {\n  _id,\n  _type,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  notes,\n  googleEventId,\n  meetLink\n}': HOST_BOOKINGS_BY_CLERK_ID_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host->clerkId == $clerkId\n  && startTime >= $startDate\n] | order(startTime asc) {\n  _id,\n  guestName,\n  guestEmail,\n  startTime,\n  endTime,\n  googleEventId,\n  meetLink\n}': HOST_UPCOMING_BOOKINGS_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host->slug.current == $hostSlug\n  && startTime >= $startDate\n  && startTime <= $endDate\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime\n}': BOOKINGS_BY_HOST_SLUG_IN_RANGE_QUERY_RESULT;
+    '*[\n  _type == "booking"\n  && host->slug.current == $hostSlug\n] | order(startTime asc) {\n  _id,\n  startTime,\n  endTime,\n  googleEventId,\n  guestEmail\n}': ALL_BOOKINGS_BY_HOST_SLUG_QUERY_RESULT;
+    '*[\n  _type == "meetingType"\n  && host->clerkId == $clerkId\n] | order(isDefault desc, name asc) {\n  _id,\n  name,\n  "slug": slug.current,\n  duration,\n  description,\n  isDefault\n}': MEETING_TYPES_BY_HOST_QUERY_RESULT;
+    '*[\n  _type == "meetingType"\n  && host->slug.current == $hostSlug\n  && slug.current == $meetingTypeSlug\n][0] {\n  _id,\n  name,\n  "slug": slug.current,\n  duration,\n  description,\n  host-> {\n    _id,\n    name,\n    email,\n    "slug": slug.current,\n    availability[] {\n      _key,\n      startDateTime,\n      endDateTime\n    },\n    connectedAccounts[] {\n      _key,\n      accountId,\n      email,\n      isDefault,\n      accessToken,\n      refreshToken,\n      expiryDate\n    }\n  }\n}': MEETING_TYPE_BY_SLUGS_QUERY_RESULT;
+    '*[\n  _type == "meetingType"\n  && host->slug.current == $hostSlug\n] | order(isDefault desc, name asc) {\n  _id,\n  name,\n  "slug": slug.current,\n  duration,\n  description,\n  isDefault\n}': MEETING_TYPES_BY_HOST_SLUG_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]._id': HOST_ID_BY_CLERK_ID_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  _type,\n  clerkId,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  },\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    provider,\n    isDefault,\n    connectedAt\n  }\n}': USER_BY_CLERK_ID_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && slug.current == $slug\n][0]{\n  _id,\n  _type,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  }\n}': USER_BY_SLUG_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    accessToken,\n    refreshToken,\n    expiryDate,\n    isDefault\n  }\n}': USER_WITH_TOKENS_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && defined(connectedAccounts[_key == $accountKey])\n][0]{\n  _id\n}': USER_ID_BY_ACCOUNT_KEY_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id\n}': USER_ID_BY_CLERK_ID_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  }\n}': USER_WITH_AVAILABILITY_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  connectedAccounts[]{\n    accountId,\n    refreshToken\n  }\n}': USER_WITH_CONNECTED_ACCOUNTS_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && slug.current == $slug\n][0]{\n  _id,\n  name,\n  email,\n  slug,\n  availability[]{\n    _key,\n    startDateTime,\n    endDateTime\n  },\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    accessToken,\n    refreshToken,\n    expiryDate,\n    isDefault\n  }\n}': HOST_BY_SLUG_WITH_TOKENS_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  connectedAccounts[]{\n    _key,\n    accountId,\n    email,\n    isDefault\n  }\n}': USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY_RESULT;
+    '*[\n  _type == "user"\n  && clerkId == $clerkId\n][0]{\n  _id,\n  name,\n  slug\n}': USER_SLUG_QUERY_RESULT;
   }
 }

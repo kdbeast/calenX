@@ -1,5 +1,5 @@
 import { defineQuery } from "next-sanity";
-import type { MEETING_TYPES_BY_HOST_QUERYResult } from "@/sanity/types";
+import type { MEETING_TYPES_BY_HOST_QUERY_RESULT } from "@/sanity/types";
 
 /**
  * Get all meeting types for a host by their Clerk ID
@@ -17,7 +17,7 @@ export const MEETING_TYPES_BY_HOST_QUERY = defineQuery(`*[
 }`);
 
 export type MeetingTypeForHost =
-  NonNullable<MEETING_TYPES_BY_HOST_QUERYResult>[number];
+  NonNullable<MEETING_TYPES_BY_HOST_QUERY_RESULT>[number];
 
 /**
  * Get a specific meeting type by host slug and meeting type slug

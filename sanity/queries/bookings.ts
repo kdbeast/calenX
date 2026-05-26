@@ -10,17 +10,17 @@
 
 import { defineQuery } from "next-sanity";
 import type {
-  HOST_BOOKINGS_BY_CLERK_ID_QUERYResult,
-  HOST_UPCOMING_BOOKINGS_QUERYResult,
+  HOST_BOOKINGS_BY_CLERK_ID_QUERY_RESULT,
+  HOST_UPCOMING_BOOKINGS_QUERY_RESULT,
 } from "@/sanity/types";
 
 // Derived type for a single booking (for dashboard)
 export type HostBooking =
-  NonNullable<HOST_BOOKINGS_BY_CLERK_ID_QUERYResult>[number];
+  NonNullable<HOST_BOOKINGS_BY_CLERK_ID_QUERY_RESULT>[number];
 
 // Derived type for upcoming bookings (for availability calendar)
 export type HostUpcomingBooking =
-  NonNullable<HOST_UPCOMING_BOOKINGS_QUERYResult>[number];
+  NonNullable<HOST_UPCOMING_BOOKINGS_QUERY_RESULT>[number];
 
 /**
  * Get all bookings for a host

@@ -8,23 +8,23 @@
  */
 
 import type {
-  USER_WITH_TOKENS_QUERYResult,
-  HOST_BY_SLUG_WITH_TOKENS_QUERYResult,
-  USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult,
+  USER_WITH_TOKENS_QUERY_RESULT,
+  HOST_BY_SLUG_WITH_TOKENS_QUERY_RESULT,
+  USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY_RESULT,
 } from "@/sanity/types";
 import { defineQuery } from "next-sanity";
 
 // Derived type from USER_WITH_TOKENS_QUERY result
 export type ConnectedAccountWithTokens = NonNullable<
-  NonNullable<USER_WITH_TOKENS_QUERYResult>["connectedAccounts"]
+  NonNullable<USER_WITH_TOKENS_QUERY_RESULT>["connectedAccounts"]
 >[number];
 
 // Derived type for host with tokens (for booking actions)
-export type HostWithTokens = NonNullable<HOST_BY_SLUG_WITH_TOKENS_QUERYResult>;
+export type HostWithTokens = NonNullable<HOST_BY_SLUG_WITH_TOKENS_QUERY_RESULT>;
 
 // Derived type for connected account display (without tokens)
 export type ConnectedAccountDisplay = NonNullable<
-  NonNullable<USER_CONNECTED_ACCOUNTS_DISPLAY_QUERYResult>["connectedAccounts"]
+  NonNullable<USER_CONNECTED_ACCOUNTS_DISPLAY_QUERY_RESULT>["connectedAccounts"]
 >[number];
 
 /**
